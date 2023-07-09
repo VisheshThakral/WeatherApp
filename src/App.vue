@@ -1,28 +1,68 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <WeatherCard />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import getCurrentLocation from "@/utils/AccessUserLocation";
+import WeatherCard from "@/components/WeatherCard.vue";
 export default {
-  name: 'App',
+  name: "App",
+  data() {
+    return {
+      city: null,
+      weatherData: {},
+    };
+  },
   components: {
-    HelloWorld
-  }
-}
+    WeatherCard,
+  },
+  methods: {
+    async fetchCurrentCity() {
+      try {
+        const currentCity = await getCurrentLocation();
+        if (currentCity) {
+          await this.$store.dispatch("setSearchCity", currentCity);
+          await this.$store.dispatch("fetchWeatherInCity", currentCity);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+  async mounted() {
+    await this.fetchCurrentCity();
+  },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="less">
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,700;0,800;0,900;1,300;1,500&display=swap");
+:root {
+  --cardWidth: 460px;
+  --darkColor: #666;
+  --grayColor: #999;
+  --cardBgColor: #f3ebeb;
+  --cloudAnimateTime: 150s;
+  --clearAnimationTime: 120s;
+  --snowAnimateTime: 15s;
+  --rainAnimateTime: 70s;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Jost", sans-serif;
+}
+body {
+  background-color: fade(#000, 30);
+  overflow: hidden;
+}
+.app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 </style>
