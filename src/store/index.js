@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
-import { API_BASE_URL, API_KEY } from "@/constants";
+import { API_BASE_URL } from "@/constants";
 
 Vue.use(Vuex);
 
@@ -21,7 +21,7 @@ export default new Vuex.Store({
     async fetchWeatherInCity({ commit }, city) {
       try {
         let response = await axios.get(
-          `${API_BASE_URL}weather?q=${city}&units=metric&APPID=${API_KEY}`
+          `${API_BASE_URL}weather?q=${city}&units=metric&APPID=${process.env.API_KEY}`
         );
         response = response?.data;
         const weatherData = {
